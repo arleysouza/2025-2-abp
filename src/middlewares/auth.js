@@ -66,7 +66,7 @@ function authPage(req, res, next) {
     return next();
   } catch (err) {
     console.warn("Auth page middleware: redirecionando para login.", err);
-    return res.redirect(302, "/login.html");
+    return res.redirect(302, "/login");
   }
 }
 
