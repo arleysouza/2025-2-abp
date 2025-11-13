@@ -10,14 +10,14 @@ API Node.js (Express + PostgreSQL) para gerenciamento de notícias, publicaçõe
 ## Clonar e Instalar
 
 ```
-git clone https://github.com/arleysouza/2025-2-abp
-cd server
+git clone https://github.com/arleysouza/2025-2-abp app
+cd app
 npm install
 ```
 
 ## Configurar Ambiente
 
-- Ajuste `server/.env` conforme seu ambiente:
+- Ajuste `app/.env` conforme seu ambiente:
   - `PORT=3000`
   - `POSTGRES_HOST`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_PORT`
   - `JWT_SECRET` (obrigatório para login emitir tokens JWT)

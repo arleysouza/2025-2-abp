@@ -85,18 +85,9 @@ async function login(req, res) {
     }
 
     const user = result.rows[0];
-    const stored = user.senha || "";
-    const isBcrypt = /^\$2[aby]\$/.test(stored);
+    const senhaValida = await bcrypt.compare(String(senha), user.senha || "");
 
-    let ok = false;
-    if (isBcrypt) {
-      ok = await bcrypt.compare(String(senha), stored);
-    } else {
-      // Compatibilidade com seed em texto puro
-      ok = String(senha) === stored;
-    }
-
-    if (!ok) {
+    if (!senhaValida) {
       return res.status(401).json({ error: "Credenciais inválidas" });
     }
 

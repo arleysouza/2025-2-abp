@@ -37,4 +37,4 @@ CREATE TABLE usuarios (
 );
 
 INSERT INTO usuarios (mail,senha)
-VALUES ('root@inpe.br','123456');
+VALUES ('root@inpe.br','$2b$10$N8Ao/yDmkoWWV927aMlrTO7pizSNtUy0RiEa9VXEjaarC0Aw2ndbm');
