@@ -1,6 +1,6 @@
 ## Visão Geral
 
-API Node.js (Express + PostgreSQL) para gerenciamento de notícias, publicações e oportunidades. Suporta upload de imagens (PNG/JPEG) para `/uploads` e salva o caminho em `filepath`.
+API Node.js (Express + PostgreSQL) para gerenciamento de notícias, publicações, oportunidades e usuários. Endpoints da API expõem CRUD protegido por JWT e a pasta `public/` fornece uma UI administrativa (login + páginas `/admin/*`) que consome a mesma API.
 
 ## Requisitos
 
@@ -25,9 +25,7 @@ npm install
 ## Criar Banco e Tabelas
 
 - Crie o banco (ex.: `abp`) no PostgreSQL
-- Rode o script SQL para criar as tabelas:
-  - psql: `psql -h <host> -U <usuario> -d <db> -f src/controllers/db.sql`
-  - ou cole o conteúdo de `src/controllers/db.sql` no pgAdmin e execute
+- Cole o conteúdo de `src/controllers/db.sql` no pgAdmin e execute para criar as tabelas e o usuário `admin` com a senha `123456`
 
 ## Executar
 
@@ -37,41 +35,13 @@ npm install
 O servidor sobe em `http://localhost:3000` e expõe:
 
 - API: `http://localhost:3000/api`
-- Arquivos enviados: `http://localhost:3000/uploads/<arquivo>`
-- Arquivos estáticos: `http://localhost:3000/` (servidos de `server/public`)
+- Uploads: `http://localhost:3000/uploads/<arquivo>`
+- UI administrativa:
+  - `/login`
+  Rotas protegidas, é necessário estar logado para acessar:
+  - `/admin/usuarios` (rotas)
+  - `/admin/noticias`
+  - `/admin/publicacoes`
+  - `/admin/oportunidades`
 
-## Testes de Rotas
 
-### Com REST Client (VS Code)
-
-- Abra `server/http/*.http` e clique em `Send Request` (recomendado instalar a extensão REST Client)
-
-### Com curl (exemplos)
-
-- Criar notícia com imagem:
-  - `curl -X POST http://localhost:3000/api/noticias -F "titulo=Exemplo" -F "link=https://exemplo.com" -F "postagem=2025-10-01" -F "exibir=true" -F "imagem=@../sample-data/um.png;type=image/png"`
-- Criar publicação com imagem:
-  - `curl -X POST http://localhost:3000/api/publicacoes -F "texto=Publicação" -F "ano=2013" -F "link=https://exemplo.com" -F "doi=https://doi.org/10.0000/x" -F "imagem=@../sample-data/tres.png;type=image/png"`
-
-Campo de arquivo esperado: `imagem` (PNG/JPEG). Arquivos são gravados em `server/src/uploads` e servidos via `/uploads`.
-
-## Qualidade de Código
-
-- Lint: `npm run lint`
-- Lint (autocorreção): `npm run lint:fix`
-
-## Criar Usuário (CLI)
-
-- Pré‑requisitos: `.env` configurado e tabelas criadas.
-- Comando via npm script:
-  - `npm run init -- admin@teste.com 123456`
-  - Observação: use `npm run init` (não `npm init`). Os argumentos devem vir após `--`.
-- Saída esperada (exemplo):
-  - `Usuário criado com sucesso: { idusuario: 1, mail: 'admin@teste.com' }`
-- Comando alternativo direto (se preferir):
-  - `node ./scripts/init-user.js admin@teste.com 123456`
-
-Regras
-
-- Senha é armazenada com hash (bcrypt, 10 rounds).
-- Se o e‑mail já existir, o script encerra informando duplicidade.

@@ -35,6 +35,7 @@ router.post(
   noticiaController.createNoticia,
 );
 router.get("/", noticiaController.getAllNoticias);
+router.get("/admin/all", auth, noticiaController.getAllNoticiasAdmin);
 // Detalhe por ID (proteção via auth, para uso no admin)
 router.get("/:id", auth, noticiaController.getNoticiaById);
 router.put(

@@ -35,6 +35,7 @@ router.post(
   publicacaoController.createPublicacao,
 );
 router.get("/", publicacaoController.getAllPublicacoes);
+router.get("/admin/all", auth, publicacaoController.getAllPublicacoes);
 router.get("/:id", auth, publicacaoController.getPublicacaoById);
 router.put(
   "/:id",

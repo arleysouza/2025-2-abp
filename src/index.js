@@ -23,36 +23,27 @@ app.listen(port, function () {
 // Servir imagens estáticas da pasta uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Rota protegida para página de cadastro de notícias
+app.get("/login", function (_req, res) {
+  res.sendFile(path.join(__dirname, "..", "public", "login.html"));
+});
+
 const auth = require("./middlewares/auth");
-app.get("/admin/noticias/nova", auth, function (_req, res) {
-  res.sendFile(path.join(__dirname, "..", "public", "noticias-create.html"));
+const authPage = auth.page || auth;
+// Páginas de gestão (protegidas)
+app.get("/admin/noticias", authPage, function (_req, res) {
+  res.sendFile(path.join(__dirname, "..", "public", "noticias-manage.html"));
 });
-app.get("/admin/noticias", auth, function (_req, res) {
-  res.sendFile(path.join(__dirname, "..", "public", "noticias-list.html"));
+app.get("/admin/publicacoes", authPage, function (_req, res) {
+  res.sendFile(path.join(__dirname, "..", "public", "publicacoes-manage.html"));
 });
-app.get("/admin/noticias/editar", auth, function (_req, res) {
-  res.sendFile(path.join(__dirname, "..", "public", "noticias-edit.html"));
+app.get("/admin/oportunidades", authPage, function (_req, res) {
+  res.sendFile(
+    path.join(__dirname, "..", "public", "oportunidades-manage.html"),
+  );
 });
-// Páginas de gestão de publicações (protegidas)
-app.get("/admin/publicacoes", auth, function (_req, res) {
-  res.sendFile(path.join(__dirname, "..", "public", "publicacoes-list.html"));
-});
-app.get("/admin/publicacoes/nova", auth, function (_req, res) {
-  res.sendFile(path.join(__dirname, "..", "public", "publicacoes-create.html"));
-});
-app.get("/admin/publicacoes/editar", auth, function (_req, res) {
-  res.sendFile(path.join(__dirname, "..", "public", "publicacoes-edit.html"));
-});
-// Páginas de gestão de oportunidades (protegidas)
-app.get("/admin/oportunidades", auth, function (_req, res) {
-  res.sendFile(path.join(__dirname, "..", "public", "oportunidades-list.html"));
-});
-app.get("/admin/oportunidades/nova", auth, function (_req, res) {
-  res.sendFile(path.join(__dirname, "..", "public", "oportunidades-create.html"));
-});
-app.get("/admin/oportunidades/editar", auth, function (_req, res) {
-  res.sendFile(path.join(__dirname, "..", "public", "oportunidades-edit.html"));
+// Página de gestão de usuários (protegida)
+app.get("/admin/usuarios", authPage, function (_req, res) {
+  res.sendFile(path.join(__dirname, "..", "public", "usuarios-manage.html"));
 });
 // Servir arquivos estáticos (HTML/CSS/JS) da pasta public (um nível acima de src)
 app.use(express.static(path.join(__dirname, "..", "public")));
@@ -60,7 +51,7 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 // Usando as rotas
 app.use("/api", rotas);
 
-// Middleware para rotas não encontradas
+// Middleware para rotas não encontradas: redireciona ao login
 app.use(function (_req, res) {
-  res.status(404).json({ error: "Rota não encontrada" });
+  res.redirect(302, "/login");
 });

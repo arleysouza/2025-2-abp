@@ -160,4 +160,60 @@ async function createUsuario(req, res) {
   }
 }
 
-module.exports = { login, updateMe, createUsuario };
+// Listar usuários (apenas id e e-mail)
+async function listUsuarios(_req, res) {
+  try {
+    const result = await pool.query(
+      "SELECT idusuario, mail FROM usuarios ORDER BY idusuario ASC",
+    );
+    return res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Erro ao listar usuários:", error);
+    return res.status(500).json({ error: "Erro ao listar usuários" });
+  }
+}
+
+// Excluir um usuário (usa req.user ou req.params.id como fallback)
+async function deleteUsuario(req, res) {
+  try {
+    const authUserId = req.user?.idusuario || null;
+    const paramId = req.params?.id || null;
+    const targetId = paramId ?? authUserId;
+
+    if (!targetId) {
+      return res
+        .status(400)
+        .json({ error: "Informe o usuário a ser excluído" });
+    }
+
+    const idNumber = Number(targetId);
+    if (!Number.isInteger(idNumber) || idNumber <= 0) {
+      return res.status(400).json({ error: "ID de usuário inválido" });
+    }
+
+    const result = await pool.query(
+      "DELETE FROM usuarios WHERE idusuario = $1 RETURNING idusuario, mail",
+      [idNumber],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
+    }
+
+    return res.status(200).json({
+      message: "Usuário excluído com sucesso",
+      usuario: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Erro ao excluir usuário:", error);
+    return res.status(500).json({ error: "Erro ao excluir usuário" });
+  }
+}
+
+module.exports = {
+  login,
+  updateMe,
+  createUsuario,
+  deleteUsuario,
+  listUsuarios,
+};

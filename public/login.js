@@ -1,3 +1,5 @@
+/* eslint-env browser */
+
 function setMessage(text, type = "") {
   const el = document.getElementById("msg");
   el.className = type;
@@ -35,7 +37,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     document.cookie = `token=${encodeURIComponent(token)}; path=/; max-age=7200`;
     setMessage("Login realizado com sucesso. Redirecionando...", "success");
     setTimeout(() => {
-      window.location.href = "/";
+      window.location.href = "/admin/usuarios";
     }, 600);
   } catch (err) {
     setMessage(err.message, "error");
